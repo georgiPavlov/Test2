@@ -1,4 +1,5 @@
 import java.util.HashMap;
+import java.util.Hashtable;
 import java.util.Map;
 
 /**
@@ -8,7 +9,7 @@ public class One {
     boolean  isOdd(int n){
         int odd =n%2;
         if (odd == 0){
-            return false
+            return false;
         }
         return true;
     }
@@ -127,6 +128,116 @@ public class One {
 
 
     }
+
+    int pow( int a, int b) {
+        if (b == 0) return 1;
+        int temp = pow(a, b/2);
+        if (b % 2 == 0){
+            return temp * temp;
+        }
+        else{
+            return (a * temp * temp);
+        }
+    }
+
+    int getOddOccurrence(int... array){
+
+        int result=0;
+        for (int i = 0; i < array.length; i++) {
+          result ^=array[i];
+        }
+        return result;
+    }
+
+    int maxSpan(int[] numbers){
+        Hashtable<Integer,Integer> map=new Hashtable<>();
+        int num;
+        int max=0;
+        for (int i = 0; i < numbers.length; i++) {
+            num=numbers[i];
+            if (map.containsKey(num)){
+                int span=i-map.get(num) +1;
+                if (span>max){
+                    max=span;
+                }
+            }else {
+                map.put(num,i);
+            }
+        }
+        return max;
+    }
+
+    boolean canBalance(int[] numbers){
+        int c;
+        int size=numbers.length;
+        if (size%2 == 0){
+            c=0;
+        }else {
+            c=1;
+        }
+        Map<Integer,Integer> a=new HashMap<>();
+        for (short k = 0; k < numbers.length; k++) {
+
+            Integer count = a.get(numbers[k]);
+            if(count == null){
+                count = 0;
+            }
+            a.put(numbers[k],count+1);
+        }
+        int count=0;
+        for(Map.Entry<Integer,Integer> mapE: a.entrySet()){
+            if(mapE.getValue()%2 !=0 ){
+                count++;
+            }
+        }
+        if (count > c){
+            return false;
+        }else {
+            return true;
+        }
+    }
+
+    int[][] rescale(int[][] original, int newWidth, int newHeight){
+        int xSum=0;
+        int ySum=0;
+
+        for (int i = 0; i <original[0].length ; i++) {
+            ySum += original[i][0];
+        }
+
+        for (int j = 0; j < original.length; j++) {
+            xSum += original[j][0];
+        }
+        int arr[][] = new int[2][2];
+        newHeight=ySum/original[0].length;
+        newWidth=xSum/original.length;
+        arr[0][0]=newWidth;
+        arr[1][0]=newHeight;
+
+        return arr;
+    }
+
+
+    String reverseMe(String argument){
+        return argument.
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
