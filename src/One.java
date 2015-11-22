@@ -31,7 +31,7 @@ public class One {
         return true;
     }
 
-    int findMin(int[] arr) {
+    int min(int[] arr) {
         int j=0;
         try {
             j = arr[0];
@@ -52,10 +52,6 @@ public class One {
     int getAverage(int[] arr) {
         long n = 0;
         for (int i = 0; i < arr.length; i++) {
-            if(n<-2147483648 || n> 2147483647){
-                System.out.println("It is not Integer");
-                return 0;
-            }
             n += arr[i];
 
         }
@@ -157,7 +153,7 @@ public class One {
     }
 
 
-    int[] matrix(short[][] image) {
+    int[] histogram(short[][] image) {
 
         Map<Short, Integer> map = new HashMap<>();
         int[] result = new int[255];
@@ -178,15 +174,10 @@ public class One {
 
             }
         }
-
-
         for (Map.Entry<Short, Integer> mapE : map.entrySet()) {
             result[mapE.getKey()] = mapE.getValue();
         }
-
         return result;
-
-
     }
 
     int pow(int a, int b) {
