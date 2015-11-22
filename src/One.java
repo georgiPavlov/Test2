@@ -24,10 +24,7 @@ public class One {
 
 
     boolean isPrime(int n) {
-        if(n<-2147483648 || n> 2147483647){
-            System.out.println("It is not Integer");
-            return false;
-        }
+        n=Math.abs(n);
         if (n % 2 == 0) return false;
         for (int i = 3; i * i < n; i += 2)
             if (n % i == 0) return false;
