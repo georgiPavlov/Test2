@@ -1,15 +1,12 @@
-import com.sun.deploy.util.StringUtils;
-import org.apache.commons.lang.StringUtils
-
 import java.awt.image.BufferedImage;
 import java.io.UnsupportedEncodingException;
 import java.math.BigInteger;
-import java.net.URISyntaxException;
 import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
-import static org.apache.commons.lang.StringUtils.contains;
 import static org.apache.commons.lang.StringUtils.countMatches;
 
 /**
@@ -41,8 +38,9 @@ public class One {
     }
 
     int findMin(int[] arr) {
+        int j=0;
         try {
-            int j = arr[0];
+            j = arr[0];
             for (int i = 1; i < arr.length; i++) {
                 if (j > arr[i]) {
                     j = arr[i];
@@ -52,6 +50,7 @@ public class One {
         }catch (IndexOutOfBoundsException e){
             e.printStackTrace();
         }
+        return j;
 
     }
 
@@ -141,13 +140,10 @@ public class One {
     }
 
     boolean itIsPalindrome(long i) {
-        int temp=0;
-        if(i<0){
-           temp=1;
-        }
+        i= Math.abs(i);
         String num = Long.toString(i);
         int size = num.length();
-        int frond = temp;
+        int frond = 0;
         int back = size;
 
 
@@ -174,12 +170,18 @@ public class One {
 
         for (short j = 0; j < image[0].length; j++) {
             for (short k = 0; k < image.length; k++) {
-
+                 if(image[j][k] >= 0){
                 Integer count = map.get(image[j][k]);
                 if (count == null) {
                     count = 0;
                 }
                 map.put(image[j][k], count + 1);
+                 }else{
+                     System.out.println("only + numbers!");
+                     int[] arrErr = new int[0];
+                     return arrErr;
+                 }
+
             }
         }
 
@@ -194,9 +196,16 @@ public class One {
     }
 
     int pow(int a, int b) {
+
         if (b == 0) return 1;
         int temp = pow(a, b / 2);
+        BigInteger big = BigInteger.valueOf(temp);
         if (b % 2 == 0) {
+            if(big.multiply(BigInteger.valueOf(temp)).compareTo
+                    (BigInteger.valueOf(Integer.MAX_VALUE)) == 1){
+                System.out.println("too big number");
+                return 0;
+            }
             return temp * temp;
         } else {
             return (a * temp * temp);
@@ -263,42 +272,96 @@ public class One {
     }
 
     int[][] rescale(int[][] original, int newWidth, int newHeight) {
-        int x_radio = original.length / newWidth;
-        int y_radio = original[0].length / newHeight;
+        boolean small =false;
+        if(original.length > newHeight && original[0].length > newWidth){
+            small=true;
+        }
+        int[][] newImage = new int[newHeight][newWidth];
         int count = 0;
         int sum = 0;
         int x = 0, y = 0;
-        int[][] temp = new int[original[0].length][newWidth];
-        int[][] newImage = new int[newHeight][newWidth];
-        for (int i = 0; i < original[0].length; i++) {
-            for (int j = 0; j < original.length; j++) {
-                sum += original[i][j];
-                if (count == x_radio) {
-                    temp[y][x] = sum / count;
-                    x++;
-                    count = 0;
-                    sum = 0;
+        if(small) {
+            int x_radio = original.length / newWidth;
+            int y_radio = original[0].length / newHeight;
+            int[][] temp = new int[original[0].length][newWidth];
+
+            for (int i = 0; i < original[0].length; i++) {
+                for (int j = 0; j < original.length; j++) {
+                    sum += original[i][j];
+                    if (count == x_radio) {
+                        temp[y][x] = sum / count;
+                        x++;
+                        count = 0;
+                        sum = 0;
+                    }
+                    count++;
                 }
                 y++;
             }
-        }
 
-        count = 0;
-        sum = 0;
-        x = 0;
-        y = 0;
+            count = 0;
+            sum = 0;
+            x = 0;
+            y = 0;
 
-
-        for (int i = 0; i < temp.length; i++) {
-            for (int j = 0; j < temp[0].length; j++) {
-                sum += temp[i][j];
-                if (count == y_radio) {
-                    newImage[y][x] = sum / count;
-                    y++;
-                    count = 0;
-                    sum = 0;
+            BigInteger big = BigInteger.valueOf(sum);
+            for (int i = 0; i < temp.length; i++) {
+                for (int j = 0; j < temp[0].length; j++) {
+                    if(big.add(BigInteger.valueOf(temp[i][j])).compareTo
+                            (BigInteger.valueOf(Integer.MAX_VALUE)) == 1){
+                        System.out.println("to big sum err Integer");
+                        int[][] err = new int[0][0];
+                        return err;
+                    }
+                    sum += temp[i][j];
+                    if (count == y_radio) {
+                        newImage[y][x] = sum / count;
+                        y++;
+                        count = 0;
+                        sum = 0;
+                    }
+                   count++;
                 }
                 x++;
+            }
+        }else {
+            int x_radio = newWidth /original.length ;
+            int y_radio = newHeight /original[0].length ;
+            int[][] temp2 = new int[original[0].length][newWidth];
+
+            for (int i = 0; i < original[0].length; i++ , y++) {
+                for (int j = 0; j < original.length; j++ ,x++) {
+                    temp2[y][x]= original[i][j];
+                    if (count == x_radio) {
+                        for (int k = 0; k < count; k++) {
+                            temp2[y][x] = 0;
+                            x++;
+                        }
+                        count = 0;
+                    }
+                }
+            }
+
+            count = 0;
+            x = 0;
+            y = 0;
+
+
+            for (int i = 0; i < temp2.length; i++,x++) {
+                for (int j = 0; j < temp2[0].length; j++ , y++) {
+                    newImage[y][x]= temp2[i][j];
+                    if (count == y_radio) {
+                        for (int k = 0; k < count; k++) {
+                            newImage[y][x] = 0;
+                            y++;
+                        }
+                        count = 0;
+                        sum = 0;
+                    }
+                    count++;
+                }
+                x++;
+
             }
         }
 
@@ -321,8 +384,21 @@ public class One {
         return argument;
     }
 
+    private Matcher matcher2;
+    private Pattern pattern2;
+    public boolean march2(String number){
+        final String USERNAME_PATTERN = "^[0-9]$";
+        pattern2 = Pattern.compile(USERNAME_PATTERN);
+        matcher2 = pattern2.matcher(number);
 
+        return matcher2.matches();
+
+    }
     boolean isPalindrome(String argument) {
+        if(!march2(argument)){
+            System.out.println("argument error");
+           return false;
+        }
         int size = argument.length();
         int frond = 0;
         int back = size;
@@ -345,7 +421,7 @@ public class One {
 
 
     boolean isPalindrome(int argument) {
-        String temp = Integer.toString(argument);
+        String temp = Integer.toString(Math.abs(argument));
         if (isPalindrome(temp)) {
             return true;
         }
@@ -354,6 +430,7 @@ public class One {
 
 
     String copyEveryChar(String input, int k) {
+        k=Math.abs(k);
         StringBuilder b = new StringBuilder();
         for (int i = 0; i < input.length(); i++) {
             if (input.charAt(i) != ' ') {
@@ -406,17 +483,21 @@ public class One {
 
     int countOcurrences1(String needle, String haystack){
         int k=0;
-        int count =0;
+        long count =0;
         while(true){
             k=haystack.indexOf(needle,k);
             if(k != -1){
-             count++;
+                if(count >= Integer.MAX_VALUE){
+                    System.out.println("to many Ocurrences");
+                    return 0;
+                }
+                count++;
                 k += needle.length();
             }else {
                 break;
             }
         }
-        return count;
+        return (int)count;
     }
 
     int countOcurrences(String needle, String haystack){
@@ -431,7 +512,9 @@ public class One {
         String[] arr = input.split("[^0-9]+");
         int sum=0;
         for (int i = 0; i <arr.length ; i++) {
-           sum +=Integer.parseInt(arr[i]);
+            if (arr[i].charAt(0) != ' ') {
+                sum += Integer.parseInt(arr[i]);
+            }
         }
         return sum;
     }
@@ -531,8 +614,21 @@ public class One {
             }
         }
 
-        int sum=0;
+        long sum=0;
+        BigInteger bigInteger1 = BigInteger.valueOf(0);
+        BigInteger bigInteger2 = BigInteger.valueOf(1);
         for (int i = 0; i <a.length ; i++) {
+            bigInteger2.multiply(BigInteger.valueOf(a[i]));
+            bigInteger2.multiply(BigInteger.valueOf(b[i]));
+            if(bigInteger2.compareTo(BigInteger.valueOf(Long.MAX_VALUE)) == 1){
+                System.out.println("to big value");
+                return 0;
+            }
+            if(bigInteger1.add(bigInteger2).compareTo(BigInteger.valueOf(Long.MAX_VALUE)) == 1){
+                System.out.println("to big value");
+                return 0;
+            }
+            bigInteger2 = BigInteger.valueOf(1);
             sum +=a[i]*b[i];
         }
         return sum;
