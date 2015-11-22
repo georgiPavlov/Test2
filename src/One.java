@@ -14,10 +14,7 @@ import static org.apache.commons.lang.StringUtils.countMatches;
  */
 public class One {
     boolean isOdd(int n) {
-        if(n<-2147483648 || n> 2147483647){
-            System.out.println("It is not Integer");
-            return false;
-        }
+        n=Math.abs(n);
         int odd = n % 2;
         if (odd == 0) {
             return false;
