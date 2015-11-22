@@ -659,8 +659,14 @@ public class One {
 
 
     long kthFac(int k, int n){
-        int res=0;
-        for (int i = 1; i < n; i++) {
+        long res=0;
+        BigInteger bigInteger = BigInteger.valueOf(1);
+        for (long i = 1; i < n; i++) {
+            bigInteger.multiply(BigInteger.valueOf(i));
+            if(bigInteger.compareTo(BigInteger.valueOf(Long.MAX_VALUE)) == 1){
+                System.out.println("Too big fac");
+                return 0;
+            }
             res*=i;
             k--;
             if(k == 0){
